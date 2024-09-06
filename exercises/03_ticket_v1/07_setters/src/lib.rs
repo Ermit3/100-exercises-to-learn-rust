@@ -11,22 +11,6 @@ pub struct Ticket {
 
 impl Ticket {
     pub fn new(title: String, description: String, status: String) -> Ticket {
-        if title.is_empty() {
-            panic!("Title cannot be empty");
-        }
-        if title.len() > 50 {
-            panic!("Title cannot be longer than 50 bytes");
-        }
-        if description.is_empty() {
-            panic!("Description cannot be empty");
-        }
-        if description.len() > 500 {
-            panic!("Description cannot be longer than 500 bytes");
-        }
-        if status != "To-Do" && status != "In Progress" && status != "Done" {
-            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
-        }
-
         Ticket {
             title,
             description,
@@ -45,12 +29,38 @@ impl Ticket {
     pub fn status(&self) -> &String {
         &self.status
     }
+
+    pub fn set_title(&mut self, new_title: String) {
+        if new_title.is_empty() {
+            panic!("Title cannot be empty");
+        }
+        if new_title.len() > 50 {
+            panic!("Title cannot be longer than 50 bytes");
+        }
+        self.title = new_title.into();
+    }
+
+    pub fn set_description(&mut self, new_description: String) {
+        if new_description.is_empty() {
+            panic!("Description cannot be empty");
+        }
+        if new_description.len() > 500 {
+            panic!("Description cannot be longer than 500 bytes");
+        }
+        self.description = new_description.into();
+    }
+    pub fn set_status(&mut self, new_status: String) {
+        if new_status != "To-Do" && new_status != "In Progress" && new_status != "Done" {
+            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
+        }
+        self.status = new_status.into();
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::Ticket;
-    use common::{overly_long_description, overly_long_title, valid_description, valid_title};
+    use common::{ overly_long_description, overly_long_title, valid_description, valid_title };
 
     #[test]
     fn works() {
@@ -79,15 +89,17 @@ mod tests {
     #[test]
     #[should_panic(expected = "Title cannot be longer than 50 bytes")]
     fn title_cannot_be_longer_than_fifty_chars() {
-        Ticket::new(valid_title(), valid_description(), "To-Do".into())
-            .set_title(overly_long_title())
+        Ticket::new(valid_title(), valid_description(), "To-Do".into()).set_title(
+            overly_long_title()
+        )
     }
 
     #[test]
     #[should_panic(expected = "Description cannot be longer than 500 bytes")]
     fn description_cannot_be_longer_than_500_chars() {
-        Ticket::new(valid_title(), valid_description(), "To-Do".into())
-            .set_description(overly_long_description())
+        Ticket::new(valid_title(), valid_description(), "To-Do".into()).set_description(
+            overly_long_description()
+        )
     }
 
     #[test]
